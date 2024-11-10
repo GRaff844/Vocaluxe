@@ -28,7 +28,10 @@ namespace Vocaluxe.Base
 {
     enum ESounds
     {
-        T440
+        T440,
+        ApplauseLow,
+        ApplauseMid,
+        ApplauseHigh
     }
 
     static class CSound
@@ -185,6 +188,15 @@ namespace Vocaluxe.Base
             {
                 case ESounds.T440:
                     file = Path.Combine(file, CSettings.FileNameSoundT440);
+                    break;
+                case ESounds.ApplauseLow:
+                    file = Path.Combine(file, CSettings.FileNameSoundApplauseLow);
+                    break;
+                case ESounds.ApplauseMid:
+                    file = Path.Combine(file, CSettings.FileNameSoundApplauseMid);
+                    break;
+                case ESounds.ApplauseHigh:
+                    file = Path.Combine(file, CSettings.FileNameSoundApplauseHigh);
                     break;
                 default:
                     return -1;
