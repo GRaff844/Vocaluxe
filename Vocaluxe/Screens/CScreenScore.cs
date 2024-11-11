@@ -431,7 +431,7 @@ namespace Vocaluxe.Screens
             return photos.Length > 0;
         }
 
-        public async _LeaveScreen()
+        private void _LeaveScreen()
         {
             if (_RatingBarStream != -1)
         {
