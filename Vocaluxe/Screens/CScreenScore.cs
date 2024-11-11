@@ -58,7 +58,7 @@ namespace Vocaluxe.Screens
 
         public override EMusicType CurrentMusicType
         {
-            get { return EMusicType.BackgroundPreview; }
+            get { return EMusicType.None; }
         }
 
         public override void Init()
