@@ -455,7 +455,7 @@ namespace Vocaluxe.Screens
             return photos.Length > 0;
         }
 
-        public void LeaveScreen()
+        public void _LeaveScreen()
         {
             // Cancel any ongoing applause sequence if it's running
             _cancellationTokenSource?.Cancel();
