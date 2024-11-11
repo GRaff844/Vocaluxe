@@ -265,7 +265,6 @@ namespace Vocaluxe.Screens
                 // Play RatingBar sound for 2 seconds before ApplauseLow
                 CSound.PlaySound(ESounds.RatingBar, false);
                 await Task.Delay(3000);  // Wait for 2 seconds
-                CSound.Close(ESounds.RatingBar, false);
                 CSound.PlaySound(ESounds.ApplauseLow, false);
             }
             else if (maxPoints < 8000)
@@ -408,6 +407,19 @@ namespace Vocaluxe.Screens
             }
         }
 
+        public static void CloseAllStreams()
+        {
+            if (_Playback != null)  // Check if playback is initialized
+            {
+                _Playback.CloseAll();  // Close all active audio streams
+                if (_Playback is IDisposable disposablePlayback)  // Check if _Playback supports IDisposable
+                {
+                    disposablePlayback.Dispose();  // Dispose resources if applicable
+                }
+            }
+            _Playback = null;  // Set _Playback to null to signal that playback is fully closed
+        }
+
         private bool _UpdateBackground()
         {
             string[] photos = CVocaluxeServer.GetPhotosOfThisRound();
@@ -419,10 +431,7 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
-            CSound.Close((int)ESounds.RatingBar);
-            CSound.Close((int)ESounds.ApplauseLow);
-            CSound.Close((int)ESounds.ApplauseMid);
-            CSound.Close((int)ESounds.ApplauseHigh);
+            CSound.CloseAllStreams();
             CParty.LeavingScore();
         }
     }
