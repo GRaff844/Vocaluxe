@@ -253,6 +253,7 @@ namespace Vocaluxe.Screens
             }
         }
 
+        private int _Stream = -1;
         private int _RatingBarStream = -1;
         private int _ApplauseStream = -1;
 
