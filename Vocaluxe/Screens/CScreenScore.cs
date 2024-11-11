@@ -321,15 +321,6 @@ namespace Vocaluxe.Screens
 
             return streamId;
         }
-
-        public async void StartApplauseSequence(int maxPoints)
-        {
-            // Create a new cancellation token source for this sequence
-            _cancellationTokenSource = new CancellationTokenSource();
-
-            // Start the applause sound sequence with cancellation support
-            await _PlayApplauseSound(maxPoints, _cancellationTokenSource.Token);
-        }
         
         private void _UpdateRatings()
         {
