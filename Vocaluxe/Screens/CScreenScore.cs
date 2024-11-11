@@ -338,7 +338,7 @@ namespace Vocaluxe.Screens
                 players = _Points.GetPlayer(_Round, CGame.NumPlayers);
 
                 int maxPoints = (int)Math.Round(players.Max(player => player.Points));
-                _PlayApplauseSound(maxPoints);
+                await _PlayApplauseSound(maxPoints, _cancellationTokenSource?.Token ?? CancellationToken.None);
             }
             else
             {
@@ -357,7 +357,7 @@ namespace Vocaluxe.Screens
                     players[p].Points = (int)Math.Round(players[p].Points / CGame.NumRounds);
 
                 int maxPoints = (int)Math.Round(players.Max(player => player.Points));
-                _PlayApplauseSound(maxPoints);
+                await _PlayApplauseSound(maxPoints, _cancellationTokenSource?.Token ?? CancellationToken.None);
             }
 
             for (int p = 0; p < players.Length; p++)
