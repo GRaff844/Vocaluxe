@@ -407,19 +407,6 @@ namespace Vocaluxe.Screens
             }
         }
 
-        public static void CloseAllStreams()
-        {
-            if (_Playback != null)  // Check if playback is initialized
-            {
-                _Playback.CloseAll();  // Close all active audio streams
-                if (_Playback is IDisposable disposablePlayback)  // Check if _Playback supports IDisposable
-                {
-                    disposablePlayback.Dispose();  // Dispose resources if applicable
-                }
-            }
-            _Playback = null;  // Set _Playback to null to signal that playback is fully closed
-        }
-
         private bool _UpdateBackground()
         {
             string[] photos = CVocaluxeServer.GetPhotosOfThisRound();
@@ -431,7 +418,7 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
-            CSound.CloseAllStreams();
+            CSound.CloseAll();
             CParty.LeavingScore();
         }
     }
