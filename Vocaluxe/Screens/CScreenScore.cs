@@ -257,6 +257,17 @@ namespace Vocaluxe.Screens
         private int _Stream = -1;
         private int _RatingBarStream = -1;
         private int _ApplauseStream = -1;
+        private CancellationTokenSource _cancellationTokenSource;
+
+        // Public method to start the applause sequence with cancellation support
+        public async Task StartApplauseSequence(int maxPoints)
+        {
+             // Create a new cancellation token source for this sequence
+             _cancellationTokenSource = new CancellationTokenSource();
+
+             // Start the applause sound sequence with the cancellation token
+             await _PlayApplauseSound(maxPoints, _cancellationTokenSource.Token);
+        }
 
         private async Task _PlayApplauseSound(int maxPoints, CancellationToken cancellationToken)
         {
@@ -264,7 +275,7 @@ namespace Vocaluxe.Screens
             double ratingBarDuration = Math.Min(maxPoints * 0.0008, 8.0);  // Cap at 8 seconds
 
             // Play the RatingBar sound for the calculated duration
-            _RatingBarStream = PlaySound(ESounds.RatingBar, 50);  // Example volume at 50%
+            _RatingBarStream = PlaySound(ESounds.RatingBar, 90);
 
             try
             {
@@ -276,11 +287,11 @@ namespace Vocaluxe.Screens
                 // Play the appropriate applause sound based on maxPoints
                 if (maxPoints < 5000)
                 {
-                    _ApplauseStream = PlaySound(ESounds.ApplauseLow, 70);  // 70% volume
+                    _ApplauseStream = PlaySound(ESounds.ApplauseLow, 90);
                 }
                 else if (maxPoints < 8000)
                 {
-                    _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);  // 80% volume
+                    _ApplauseStream = PlaySound(ESounds.ApplauseMid, 90);  // 80% volume
                 }
                 else
                 {
@@ -472,7 +483,7 @@ namespace Vocaluxe.Screens
                 _ApplauseStream = -1;  // Reset the stream ID
             }
 
-                CParty.LeavingScore();
+            CParty.LeavingScore();
             }
     }
 }
