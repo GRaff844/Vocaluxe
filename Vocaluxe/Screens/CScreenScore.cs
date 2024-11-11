@@ -265,7 +265,7 @@ namespace Vocaluxe.Screens
                 // Play RatingBar sound for 2 seconds before ApplauseLow
                 CSound.PlaySound(ESounds.RatingBar, false);
                 await Task.Delay(2000);  // Wait for 2 seconds
-                CSound.Close(ESounds.RatingBar);
+                CSound.Close((int)ESounds.RatingBar);
                 CSound.PlaySound(ESounds.ApplauseLow, false);
             }
             else if (maxPoints < 8000)
