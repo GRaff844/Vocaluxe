@@ -434,16 +434,10 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
-            if (_RatingBarStream != -1)
+            if (_Stream != -1)
             {
-                 CSound.Close(_RatingBarStream);
-                _RatingBarStream = -1;
-            }
-
-            if (_ApplauseStream != -1)
-            {
-                 CSound.Close(_ApplauseStream);
-                 _ApplauseStream = -1;
+                 CSound.Close(_Stream);
+                _Stream = -1;
             }
             
             CParty.LeavingScore();
