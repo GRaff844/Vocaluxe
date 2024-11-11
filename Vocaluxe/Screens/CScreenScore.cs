@@ -253,7 +253,8 @@ namespace Vocaluxe.Screens
             }
         }
 
-        private int _Stream = -1;
+        private int _RatingBarStream = -1;
+        private int _ApplauseStream = -1;
 
         private async void _PlayApplauseSound(int maxPoints)
         {
@@ -261,21 +262,21 @@ namespace Vocaluxe.Screens
             double ratingBarDuration = Math.Min(maxPoints * 0.0008, 8.0);  // Cap at 8 seconds
 
             // Play the RatingBar sound for the calculated duration
-            _Stream = PlaySound(ESounds.RatingBar, 80);
+            _RatingBarStream = PlaySound(ESounds.RatingBar, 80);
             await Task.Delay((int)(ratingBarDuration * 1000));
 
             // Play the appropriate applause sound based on maxPoints
             if (maxPoints < 5000)
             {
-                _Stream = PlaySound(ESounds.ApplauseLow, 80);
+                _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
             }
             else if (maxPoints < 8000)
             {
-                _Stream = PlaySound(ESounds.ApplauseMid, 80);
+                _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);
             }
             else
             {
-                _Stream = PlaySound(ESounds.ApplauseHigh, 80);
+                _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 80);
             }
         }
 
@@ -432,8 +433,17 @@ namespace Vocaluxe.Screens
 
         public async _LeaveScreen()
         {
-            await Task.Delay(100);
-            CSound.CloseAllStreams();
+            if (_RatingBarStream != -1)
+        {
+            CSound.Close(_RatingBarStream);
+            _RatingBarStream = -1;
+        }
+
+        if (_ApplauseStream != -1)
+        {
+            CSound.Close(_ApplauseStream);
+            _ApplauseStream = -1;
+        }
             CParty.LeavingScore();
         }
     }
