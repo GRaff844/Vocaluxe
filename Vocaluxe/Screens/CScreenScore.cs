@@ -264,7 +264,7 @@ namespace Vocaluxe.Screens
             {
                 // Play RatingBar sound for 2 seconds before ApplauseLow
                 CSound.PlaySound(ESounds.RatingBar, false);
-                await Task.Delay(2000);  // Wait for 2 seconds
+                await Task.Delay(3000);  // Wait for 2 seconds
                 CSound.Close((int)ESounds.RatingBar);
                 CSound.PlaySound(ESounds.ApplauseLow, false);
             }
@@ -272,14 +272,14 @@ namespace Vocaluxe.Screens
             {
                 // Play RatingBar sound for 4 seconds before ApplauseMid
                 CSound.PlaySound(ESounds.RatingBar, false);
-                await Task.Delay(4000);  // Wait for 4 seconds
+                await Task.Delay(5500);  // Wait for 4 seconds
                 CSound.PlaySound(ESounds.ApplauseMid, false);
             }
             else
             {
                 // Play RatingBar sound for 6 seconds before ApplauseHigh
                 CSound.PlaySound(ESounds.RatingBar, false);
-                await Task.Delay(6000);  // Wait for 6 seconds
+                await Task.Delay(7500);  // Wait for 6 seconds
                 CSound.PlaySound(ESounds.ApplauseHigh, false);
             }
         }
