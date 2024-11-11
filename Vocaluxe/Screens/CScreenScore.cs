@@ -322,7 +322,7 @@ namespace Vocaluxe.Screens
             return streamId;
         }
         
-        public async _UpdateRatings()
+        private async Task _UpdateRatings()
         {
             CSong song = null;
             var players = new SPlayer[CGame.NumPlayers];
