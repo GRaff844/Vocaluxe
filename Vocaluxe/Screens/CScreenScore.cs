@@ -432,6 +432,7 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            await Task.Delay(100);
             CSound.CloseAllStreams();
             CParty.LeavingScore();
         }
