@@ -253,7 +253,7 @@ namespace Vocaluxe.Screens
             }
         }
 
-        private int _Stream = -1;  // Store the current audio stream ID
+        private int _Stream = -1;
 
         private async void _PlayApplauseSound(int maxPoints)
         {
@@ -285,7 +285,7 @@ namespace Vocaluxe.Screens
             // Stop the previous sound if it was playing
             if (_Stream != -1)
             {
-                CSound.Close(_Stream);  // Close the previous stream to stop it
+                CSound.Close(_Stream);
             }
 
             // Start the new sound and retrieve its stream ID
