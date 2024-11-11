@@ -408,6 +408,9 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            CSound.Close((int)ESounds.ApplauseLow);
+            CSound.Close((int)ESounds.ApplauseMid);
+            CSound.Close((int)ESounds.ApplauseHigh);
             CParty.LeavingScore();
         }
     }
