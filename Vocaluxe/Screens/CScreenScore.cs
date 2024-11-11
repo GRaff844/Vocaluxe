@@ -252,25 +252,34 @@ namespace Vocaluxe.Screens
             }
         }
 
-        private void _PlayApplauseSound(int maxPoints)
+        private async void _PlayApplauseSound(int maxPoints)
         {
-             if (maxPoints < 2000)
-             {
-                  // No sound for scores between 0 and 1999
-                  return;
-             }
-             else if (maxPoints < 5000)
-             {
-                  CSound.PlaySound(ESounds.ApplauseLow, false);
-             }
-             else if (maxPoints < 8000)
-             {
-                  CSound.PlaySound(ESounds.ApplauseMid, false);
-             }
-             else
-             {
-              CSound.PlaySound(ESounds.ApplauseHigh, false);
-             }
+            if (maxPoints < 2000)
+            {
+                // No sound for scores between 0 and 1999
+                return;
+            }
+            else if (maxPoints < 5000)
+            {
+                // Play RatingBar sound for 2 seconds before ApplauseLow
+                CSound.PlaySound(ESounds.RatingBar, false);
+                await Task.Delay(2000);  // Wait for 2 seconds
+                CSound.PlaySound(ESounds.ApplauseLow, false);
+            }
+            else if (maxPoints < 8000)
+            {
+                // Play RatingBar sound for 4 seconds before ApplauseMid
+                CSound.PlaySound(ESounds.RatingBar, false);
+                await Task.Delay(4000);  // Wait for 4 seconds
+                CSound.PlaySound(ESounds.ApplauseMid, false);
+            }
+            else
+            {
+                // Play RatingBar sound for 6 seconds before ApplauseHigh
+                CSound.PlaySound(ESounds.RatingBar, false);
+                await Task.Delay(6000);  // Wait for 6 seconds
+                CSound.PlaySound(ESounds.ApplauseHigh, false);
+            }
         }
 
         private void _UpdateRatings()
@@ -408,6 +417,7 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            CSound.Close((int)ESounds.RatingBar);
             CSound.Close((int)ESounds.ApplauseLow);
             CSound.Close((int)ESounds.ApplauseMid);
             CSound.Close((int)ESounds.ApplauseHigh);
