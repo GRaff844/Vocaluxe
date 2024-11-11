@@ -253,6 +253,8 @@ namespace Vocaluxe.Screens
             }
         }
 
+        private int _Stream = -1;  // Store the current audio stream ID
+
         private async void _PlayApplauseSound(int maxPoints)
         {
             if (maxPoints < 2000)
@@ -263,24 +265,37 @@ namespace Vocaluxe.Screens
             else if (maxPoints < 5000)
             {
                 // Play RatingBar sound for 2 seconds before ApplauseLow
-                CSound.PlaySound(ESounds.RatingBar, false);
-                await Task.Delay(3000);  // Wait for 2 seconds
-                CSound.PlaySound(ESounds.ApplauseLow, false);
+                _Stream = PlaySound(ESounds.RatingBar);
+                await Task.Delay(3000);
+                _Stream = PlaySound(ESounds.ApplauseLow);
             }
             else if (maxPoints < 8000)
             {
                 // Play RatingBar sound for 4 seconds before ApplauseMid
-                CSound.PlaySound(ESounds.RatingBar, false);
-                await Task.Delay(5500);  // Wait for 4 seconds
-                CSound.PlaySound(ESounds.ApplauseMid, false);
+                _Stream = PlaySound(ESounds.RatingBar);
+                await Task.Delay(5500);
+                _Stream = PlaySound(ESounds.ApplauseMid);
             }
             else
             {
                 // Play RatingBar sound for 6 seconds before ApplauseHigh
-                CSound.PlaySound(ESounds.RatingBar, false);
-                await Task.Delay(7500);  // Wait for 6 seconds
-                CSound.PlaySound(ESounds.ApplauseHigh, false);
+                _Stream = PlaySound(ESounds.RatingBar);
+                await Task.Delay(7500);
+                _Stream = PlaySound(ESounds.ApplauseHigh);
             }
+        }
+
+        // Helper method to play a sound, track its stream ID, and stop previous sounds
+        private int PlaySound(ESounds sound)
+        {
+            // Stop the previous sound if it was playing
+            if (_Stream != -1)
+            {
+                CSound.Close(_Stream);  // Close the previous stream to stop it
+            }
+
+            // Start the new sound and return its stream ID
+            return CSound.PlaySound(sound, false);
         }
 
         private void _UpdateRatings()
@@ -418,7 +433,6 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
-            CSound.CloseAll();
             CParty.LeavingScore();
         }
     }
