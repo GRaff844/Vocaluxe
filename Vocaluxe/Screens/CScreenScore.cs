@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Vocaluxe.Base;
 using Vocaluxe.Base.Server;
@@ -257,50 +256,28 @@ namespace Vocaluxe.Screens
         private int _Stream = -1;
         private int _RatingBarStream = -1;
         private int _ApplauseStream = -1;
-        private CancellationTokenSource _cancellationTokenSource;
 
-        // Public method to start the applause sequence with cancellation support
-        public async Task StartApplauseSequence(int maxPoints)
-        {
-             // Create a new cancellation token source for this sequence
-             _cancellationTokenSource = new CancellationTokenSource();
-
-             // Start the applause sound sequence with the cancellation token
-             await _PlayApplauseSound(maxPoints, _cancellationTokenSource.Token);
-        }
-
-        private async Task _PlayApplauseSound(int maxPoints, CancellationToken cancellationToken)
+        private async void _PlayApplauseSound(int maxPoints)
         {
             // Calculate the duration of the RatingBar sound based on maxPoints
             double ratingBarDuration = Math.Min(maxPoints * 0.0008, 8.0);  // Cap at 8 seconds
 
             // Play the RatingBar sound for the calculated duration
-            _RatingBarStream = PlaySound(ESounds.RatingBar, 90);
+            _RatingBarStream = PlaySound(ESounds.RatingBar, 80);
+            await Task.Delay((int)(ratingBarDuration * 1000));
 
-            try
+            // Play the appropriate applause sound based on maxPoints
+            if (maxPoints < 5000)
             {
-                await Task.Delay((int)(ratingBarDuration * 1000), cancellationToken);  // Convert seconds to milliseconds
-
-                // Check if cancellation was requested before playing applause
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // Play the appropriate applause sound based on maxPoints
-                if (maxPoints < 5000)
-                {
-                    _ApplauseStream = PlaySound(ESounds.ApplauseLow, 90);
-                }
-                else if (maxPoints < 8000)
-                {
-                    _ApplauseStream = PlaySound(ESounds.ApplauseMid, 90);  // 80% volume
-                }
-                else
-                {
-                    _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 90);  // 90% volume
-                }
+                _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
             }
-            catch (OperationCanceledException)
+            else if (maxPoints < 8000)
             {
-                // Handle cancellation if needed (e.g., cleanup or logging)
+                _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);
+            }
+            else
+            {
+                _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 80);
             }
         }
 
@@ -321,8 +298,8 @@ namespace Vocaluxe.Screens
 
             return streamId;
         }
-        
-        private async Task _UpdateRatings()
+
+        private void _UpdateRatings()
         {
             CSong song = null;
             var players = new SPlayer[CGame.NumPlayers];
@@ -338,7 +315,7 @@ namespace Vocaluxe.Screens
                 players = _Points.GetPlayer(_Round, CGame.NumPlayers);
 
                 int maxPoints = (int)Math.Round(players.Max(player => player.Points));
-                await _PlayApplauseSound(maxPoints, _cancellationTokenSource?.Token ?? CancellationToken.None);
+                _PlayApplauseSound(maxPoints);
             }
             else
             {
@@ -357,7 +334,7 @@ namespace Vocaluxe.Screens
                     players[p].Points = (int)Math.Round(players[p].Points / CGame.NumRounds);
 
                 int maxPoints = (int)Math.Round(players.Max(player => player.Points));
-                await _PlayApplauseSound(maxPoints, _cancellationTokenSource?.Token ?? CancellationToken.None);
+                _PlayApplauseSound(maxPoints);
             }
 
             for (int p = 0; p < players.Length; p++)
@@ -455,26 +432,21 @@ namespace Vocaluxe.Screens
             return photos.Length > 0;
         }
 
-        public void _LeaveScreen()
+        private void _LeaveScreen()
         {
-            // Cancel any ongoing applause sequence if it's running
-            _cancellationTokenSource?.Cancel();
-
-            // Close the RatingBar stream if it is active
             if (_RatingBarStream != -1)
             {
-                CSound.Close(_RatingBarStream);
-                _RatingBarStream = -1;  // Reset the stream ID
+                 CSound.Close(_RatingBarStream);
+                _RatingBarStream = -1;
             }
 
-            // Close the Applause stream if it is active
             if (_ApplauseStream != -1)
             {
-                CSound.Close(_ApplauseStream);
-                _ApplauseStream = -1;  // Reset the stream ID
+                 CSound.Close(_ApplauseStream);
+                 _ApplauseStream = -1;
             }
-
+            
             CParty.LeavingScore();
-            }
+        }
     }
 }
