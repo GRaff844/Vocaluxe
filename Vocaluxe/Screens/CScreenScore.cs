@@ -430,7 +430,7 @@ namespace Vocaluxe.Screens
             return photos.Length > 0;
         }
 
-        private void _LeaveScreen()
+        public async _LeaveScreen()
         {
             await Task.Delay(100);
             CSound.CloseAllStreams();
