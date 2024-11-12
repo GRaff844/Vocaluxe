@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ using VocaluxeLib;
 using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Songs;
+using Vocaluxe.Lib.Sound;
 
 namespace Vocaluxe.Screens
 {
@@ -54,6 +55,22 @@ namespace Vocaluxe.Screens
         public override EMusicType CurrentMusicType
         {
             get { return EMusicType.BackgroundPreview; }
+        }
+
+        private int _Stream = -1;
+        private bool _HasPlayedSound = false;
+        
+        private int PlaySound(ESounds sound, int volume)
+        {
+            if (_Stream != -1)
+            {
+                CSound.Close(_Stream);
+            }
+
+            int streamId = CSound.PlaySound(sound, false);
+            CSound.SetStreamVolume(streamId, volume);
+
+            return streamId;
         }
 
         public override void Init()
@@ -161,6 +178,8 @@ namespace Vocaluxe.Screens
             return true;
         }
 
+        private bool _IsLeavingScreen = false;
+        
         public override bool UpdateGame()
         {
             for (int p = 0; p < _NumEntrys; p++)
@@ -184,7 +203,13 @@ namespace Vocaluxe.Screens
                     _Texts[_TextDate[p]].Text = _Scores[_Round][_Pos + p].Date;
 
                     _ParticleEffects[_ParticleEffectNew[p]].Visible = _IsNewEntry(_Scores[_Round][_Pos + p].ID);
-                }
+
+                    if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound && !_IsLeavingScreen)
+                    {
+                         _Stream = PlaySound(ESounds.Highscore, 80);
+                         _HasPlayedSound = true;
+                    }
+                  }
                 else
                 {
                     _Texts[_TextNumber[p]].Visible = false;
@@ -200,6 +225,7 @@ namespace Vocaluxe.Screens
         public override void OnShow()
         {
             base.OnShow();
+            _IsLeavingScreen = false;
             _Round = 0;
             _Pos = 0;
             _NewEntryIDs.Clear();
@@ -348,6 +374,8 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            _IsLeavingScreen = true;
+            CSound.Close(_Stream);
             CParty.LeavingHighscore();
         }
     }
