@@ -221,7 +221,7 @@ namespace Vocaluxe.Screens
             }
             return true;
         }
-    
+
         public override void OnShow()
         {
             base.OnShow();
