@@ -180,48 +180,47 @@ namespace Vocaluxe.Screens
 
         private bool _IsLeavingScreen = false;
         
-    public override bool UpdateGame()
-{
-    for (int p = 0; p < _NumEntrys; p++)
-    {
-        if (_Pos + p < _Scores[_Round].Count)
+        public override bool UpdateGame()
         {
-            _Texts[_TextNumber[p]].Visible = true;
-            _Texts[_TextName[p]].Visible = true;
-            _Texts[_TextScore[p]].Visible = true;
-            _Texts[_TextDate[p]].Visible = true;
-
-            _Texts[_TextNumber[p]].Text = (_Pos + p + 1).ToString();
-
-            string name = _Scores[_Round][_Pos + p].Name;
-            name += " [" + CLanguage.Translate(Enum.GetName(typeof(EGameDifficulty), _Scores[_Round][_Pos + p].Difficulty)) + "]";
-            if (_IsDuet)
-                name += " (P" + (_Scores[_Round][_Pos + p].VoiceNr + 1) + ")";
-            _Texts[_TextName[p]].Text = name;
-
-            _Texts[_TextScore[p]].Text = _Scores[_Round][_Pos + p].Score.ToString("D");
-            _Texts[_TextDate[p]].Text = _Scores[_Round][_Pos + p].Date;
-
-            _ParticleEffects[_ParticleEffectNew[p]].Visible = _IsNewEntry(_Scores[_Round][_Pos + p].ID);
-
-            if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound && !_IsLeavingScreen)
+            for (int p = 0; p < _NumEntrys; p++)
             {
-                _Stream = PlaySound(ESounds.Highscore, 80);
-                _HasPlayedSound = true;
-            }
-        }
-        else
-        {
-            _Texts[_TextNumber[p]].Visible = false;
-            _Texts[_TextName[p]].Visible = false;
-            _Texts[_TextScore[p]].Visible = false;
-            _Texts[_TextDate[p]].Visible = false;
-            _ParticleEffects[_ParticleEffectNew[p]].Visible = false;
-        }
-    }
+                if (_Pos + p < _Scores[_Round].Count)
+                {
+                    _Texts[_TextNumber[p]].Visible = true;
+                    _Texts[_TextName[p]].Visible = true;
+                    _Texts[_TextScore[p]].Visible = true;
+                    _Texts[_TextDate[p]].Visible = true;
 
-    return true;
-}
+                    _Texts[_TextNumber[p]].Text = (_Pos + p + 1).ToString();
+
+                    string name = _Scores[_Round][_Pos + p].Name;
+                    name += " [" + CLanguage.Translate(Enum.GetName(typeof(EGameDifficulty), _Scores[_Round][_Pos + p].Difficulty)) + "]";
+                    if (_IsDuet)
+                        name += " (P" + (_Scores[_Round][_Pos + p].VoiceNr + 1) + ")";
+                    _Texts[_TextName[p]].Text = name;
+
+                    _Texts[_TextScore[p]].Text = _Scores[_Round][_Pos + p].Score.ToString("D");
+                    _Texts[_TextDate[p]].Text = _Scores[_Round][_Pos + p].Date;
+
+                    _ParticleEffects[_ParticleEffectNew[p]].Visible = _IsNewEntry(_Scores[_Round][_Pos + p].ID);
+
+                    if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound && !_IsLeavingScreen)
+                    {
+                         _Stream = PlaySound(ESounds.Highscore, 80);
+                         _HasPlayedSound = true;
+                    }
+                  }
+                else
+                {
+                    _Texts[_TextNumber[p]].Visible = false;
+                    _Texts[_TextName[p]].Visible = false;
+                    _Texts[_TextScore[p]].Visible = false;
+                    _Texts[_TextDate[p]].Visible = false;
+                    _ParticleEffects[_ParticleEffectNew[p]].Visible = false;
+                }
+            }
+            return true;
+        }
     
         public override void OnShow()
         {
