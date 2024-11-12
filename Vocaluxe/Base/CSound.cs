@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -28,7 +28,8 @@ namespace Vocaluxe.Base
 {
     enum ESounds
     {
-        T440
+        T440,
+        Highscore
     }
 
     static class CSound
@@ -185,6 +186,9 @@ namespace Vocaluxe.Base
             {
                 case ESounds.T440:
                     file = Path.Combine(file, CSettings.FileNameSoundT440);
+                    break;
+                case ESounds.Highscore:
+                    file = Path.Combine(file, CSettings.FileNameSoundHighscore);
                     break;
                 default:
                     return -1;
