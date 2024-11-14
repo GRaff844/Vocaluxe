@@ -172,9 +172,7 @@ namespace Vocaluxe.Screens
             _ChangePos(mouseEvent.Wheel);
             return true;
         }
-
-        private bool _IsLeavinScreen = false;
-        
+       
         public override bool UpdateGame()
         {
             for (int p = 0; p < _NumEntrys; p++)
@@ -199,7 +197,7 @@ namespace Vocaluxe.Screens
 
                     _ParticleEffects[_ParticleEffectNew[p]].Visible = _IsNewEntry(_Scores[_Round][_Pos + p].ID);
 
-                    if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound && !_IsLeavinScreen)
+                    if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound)
                     {
                          _HighscoreStream = PlaySound(ESounds.Highscore, 80);
                          _HasPlayedSound = true;
@@ -220,7 +218,6 @@ namespace Vocaluxe.Screens
         public override void OnShow()
         {
             base.OnShow();
-            _IsLeavinScreen = false;
             _HasPlayedSound = false;
             _Round = 0;
             _Pos = 0;
@@ -369,9 +366,13 @@ namespace Vocaluxe.Screens
         }
 
         private void _LeaveScreen()
-        {
-            _IsLeavinScreen = true;
-            CSound.Close(_HighscoreStream);
+        {           
+            if (_HighscoreStream != -1)
+            {
+                 CSound.Close(_HighscoreStream);
+                _HighscoreStream = -1;
+            }
+            
             CParty.LeavingHighscore();
         }
     }
