@@ -55,6 +55,8 @@ namespace Vocaluxe.Screens
         private string[,] _StaticAvatar;
         private int _Round;
         private CPoints _Points;
+        
+        private bool _IsLeavingScreen = false;
 
         public override EMusicType CurrentMusicType
         {
@@ -132,6 +134,8 @@ namespace Vocaluxe.Screens
         public override void OnShow()
         {
             base.OnShow();
+            _IsLeavingScreen = false;
+            
             //-1 --> Show average
             _Round = CGame.NumRounds > 1 ? -1 : 0;
             _Points = CGame.GetPoints();
@@ -267,15 +271,15 @@ namespace Vocaluxe.Screens
             await Task.Delay((int)(ratingBarDuration * 1000));
 
             // Play the appropriate applause sound based on maxPoints
-            if (maxPoints < 5000)
+            if (maxPoints < 5000 && !_IsLeavingScreen)
             {
                 _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
             }
-            else if (maxPoints < 8000)
+            else if (maxPoints < 8000 && !_IsLeavingScreen)
             {
                 _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);
             }
-            else
+            else if (!_IsLeavingScreen)
             {
                 _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 80);
             }
@@ -434,6 +438,8 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            _IsLeavingScreen = true;
+            
             if (_RatingBarStream != -1)
             {
                  CSound.Close(_RatingBarStream);
