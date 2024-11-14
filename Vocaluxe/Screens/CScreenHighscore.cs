@@ -226,6 +226,7 @@ namespace Vocaluxe.Screens
         {
             base.OnShow();
             _IsLeavingScreen = false;
+            _HasPlayedSound = false;
             _Round = 0;
             _Pos = 0;
             _NewEntryIDs.Clear();
