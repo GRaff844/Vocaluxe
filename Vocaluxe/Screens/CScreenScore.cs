@@ -269,6 +269,11 @@ namespace Vocaluxe.Screens
             // Play the RatingBar sound for the calculated duration
             _RatingBarStream = PlaySound(ESounds.RatingBar, 80);
             await Task.Delay((int)(ratingBarDuration * 1000));
+            if (_RatingBarStream != -1)
+            {
+                 CSound.Close(_RatingBarStream);
+                 _RatingBarStream = -1;
+            }
 
             // Play the appropriate applause sound based on maxPoints
             if (maxPoints < 5000 && !_IsLeavingScreen)
