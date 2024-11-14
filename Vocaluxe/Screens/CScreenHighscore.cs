@@ -57,6 +57,7 @@ namespace Vocaluxe.Screens
             get { return EMusicType.BackgroundPreview; }
         }
 
+        private int _Stream = -1;
         private int _HighscoreStream = -1;
         private bool _HasPlayedSound = false;
         
