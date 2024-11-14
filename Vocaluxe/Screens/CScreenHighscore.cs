@@ -57,16 +57,11 @@ namespace Vocaluxe.Screens
             get { return EMusicType.BackgroundPreview; }
         }
 
-        private int _Stream = -1;
+        private int _HighscoreStream = -1;
         private bool _HasPlayedSound = false;
         
         private int PlaySound(ESounds sound, int volume)
         {
-            if (_Stream != -1)
-            {
-                CSound.Close(_Stream);
-            }
-
             int streamId = CSound.PlaySound(sound, false);
             CSound.SetStreamVolume(streamId, volume);
 
@@ -206,7 +201,7 @@ namespace Vocaluxe.Screens
 
                     if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound && !_IsLeavingScreen)
                     {
-                         _Stream = PlaySound(ESounds.Highscore, 80);
+                         _HighscoreStream = PlaySound(ESounds.Highscore, 80);
                          _HasPlayedSound = true;
                     }
                   }
@@ -376,7 +371,7 @@ namespace Vocaluxe.Screens
         private void _LeaveScreen()
         {
             _IsLeavingScreen = true;
-            CSound.Close(_Stream);
+            CSound.Close(_HighscoreStream);
             CParty.LeavingHighscore();
         }
     }
