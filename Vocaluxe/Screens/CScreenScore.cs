@@ -276,7 +276,11 @@ namespace Vocaluxe.Screens
             }
 
             // Play the appropriate applause sound based on maxPoints
-            if (maxPoints < 5000 && !_IsLeavingScreen)
+            if (maxPoints < 2000 && !_IsLeavingScreen)
+            {
+                // No sound is played
+            }
+            else if (maxPoints < 5000 && !_IsLeavingScreen)
             {
                 _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
             }
