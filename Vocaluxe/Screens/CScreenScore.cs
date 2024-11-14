@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -19,12 +19,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Linq;
+using System.Threading.Tasks;
 using Vocaluxe.Base;
 using Vocaluxe.Base.Server;
 using VocaluxeLib;
 using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Songs;
+using Vocaluxe.Lib.Sound;
 
 namespace Vocaluxe.Screens
 {
@@ -52,6 +55,8 @@ namespace Vocaluxe.Screens
         private string[,] _StaticAvatar;
         private int _Round;
         private CPoints _Points;
+        
+        private bool _IsLeavingScreen = false;
 
         public override EMusicType CurrentMusicType
         {
@@ -129,6 +134,8 @@ namespace Vocaluxe.Screens
         public override void OnShow()
         {
             base.OnShow();
+            _IsLeavingScreen = false;
+            
             //-1 --> Show average
             _Round = CGame.NumRounds > 1 ? -1 : 0;
             _Points = CGame.GetPoints();
@@ -250,6 +257,57 @@ namespace Vocaluxe.Screens
             }
         }
 
+        private int _Stream = -1;
+        private int _RatingBarStream = -1;
+        private int _ApplauseStream = -1;
+
+        private async void _PlayApplauseSound(int maxPoints)
+        {
+            // Calculate the duration of the RatingBar sound based on maxPoints
+            double ratingBarDuration = Math.Min(maxPoints * 0.00085, 8.5);  // Cap at 8.5 seconds
+
+            // Play the RatingBar sound for the calculated duration
+            _RatingBarStream = PlaySound(ESounds.RatingBar, 80);
+            await Task.Delay((int)(ratingBarDuration * 1000));
+            if (_RatingBarStream != -1)
+            {
+                 CSound.Close(_RatingBarStream);
+                 _RatingBarStream = -1;
+            }
+
+            // Play the appropriate applause sound based on maxPoints
+            if (maxPoints < 5000 && !_IsLeavingScreen)
+            {
+                _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
+            }
+            else if (maxPoints < 8000 && !_IsLeavingScreen)
+            {
+                _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);
+            }
+            else if (!_IsLeavingScreen)
+            {
+                _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 80);
+            }
+        }
+
+        // Helper method to play a sound at a specific volume, track its stream ID, and stop previous sounds
+        private int PlaySound(ESounds sound, int volume)
+        {
+            // Stop the previous sound if it was playing
+            if (_Stream != -1)
+            {
+                CSound.Close(_Stream);
+            }
+
+            // Start the new sound and retrieve its stream ID
+            int streamId = CSound.PlaySound(sound, false);
+
+            // Set the volume for this specific stream
+            CSound.SetStreamVolume(streamId, volume);
+
+            return streamId;
+        }
+
         private void _UpdateRatings()
         {
             CSong song = null;
@@ -264,6 +322,9 @@ namespace Vocaluxe.Screens
                 if (_Points.NumRounds > 1)
                     _Texts[_TextSong].Text += " (" + (_Round + 1) + "/" + _Points.NumRounds + ")";
                 players = _Points.GetPlayer(_Round, CGame.NumPlayers);
+
+                int maxPoints = (int)Math.Round(players.Max(player => player.Points));
+                _PlayApplauseSound(maxPoints);
             }
             else
             {
@@ -280,6 +341,9 @@ namespace Vocaluxe.Screens
                 }
                 for (int p = 0; p < players.Length; p++)
                     players[p].Points = (int)Math.Round(players[p].Points / CGame.NumRounds);
+
+                int maxPoints = (int)Math.Round(players.Max(player => player.Points));
+                _PlayApplauseSound(maxPoints);
             }
 
             for (int p = 0; p < players.Length; p++)
@@ -379,6 +443,20 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            _IsLeavingScreen = true;
+            
+            if (_RatingBarStream != -1)
+            {
+                 CSound.Close(_RatingBarStream);
+                _RatingBarStream = -1;
+            }
+
+            if (_ApplauseStream != -1)
+            {
+                 CSound.Close(_ApplauseStream);
+                 _ApplauseStream = -1;
+            }
+            
             CParty.LeavingScore();
         }
     }
