@@ -132,6 +132,7 @@ namespace VocaluxeLib.Menu
             set
             {
                 _ProgressLast = 0;
+                _AnimTimer.Reset();
                 //Animation is still running, so use current state for calculations
                 if(_ProgressCurrent != _ProgressTarget)
                 {
