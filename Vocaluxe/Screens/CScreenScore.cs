@@ -264,7 +264,7 @@ namespace Vocaluxe.Screens
         private async void _PlayApplauseSound(int maxPoints)
         {
             // Calculate the duration of the RatingBar sound based on maxPoints
-            double ratingBarDuration = Math.Min(maxPoints * 0.0008, 8.0);  // Cap at 8 seconds
+            double ratingBarDuration = Math.Min(maxPoints * 0.0008, 8.5);  // Cap at 8.5 seconds
 
             // Play the RatingBar sound for the calculated duration
             _RatingBarStream = PlaySound(ESounds.RatingBar, 80);
