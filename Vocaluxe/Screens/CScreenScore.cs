@@ -56,8 +56,6 @@ namespace Vocaluxe.Screens
         private int _Round;
         private CPoints _Points;
         
-        private bool _IsLeavingScreen = false;
-
         public override EMusicType CurrentMusicType
         {
             get { return EMusicType.BackgroundPreview; }
@@ -133,9 +131,7 @@ namespace Vocaluxe.Screens
 
         public override void OnShow()
         {
-            base.OnShow();
-            _IsLeavingScreen = false;
-            
+            base.OnShow();          
             //-1 --> Show average
             _Round = CGame.NumRounds > 1 ? -1 : 0;
             _Points = CGame.GetPoints();
@@ -258,38 +254,28 @@ namespace Vocaluxe.Screens
         }
 
         private int _Stream = -1;
-        private int _RatingBarStream = -1;
         private int _ApplauseStream = -1;
 
         private async void _PlayApplauseSound(int maxPoints)
         {
-            // Calculate the duration of the RatingBar sound based on maxPoints
-            double ratingBarDuration = Math.Min(maxPoints * 0.00085, 8.5);  // Cap at 8.5 seconds
-
-            // Play the RatingBar sound for the calculated duration
-            _RatingBarStream = PlaySound(ESounds.RatingBar, 80);
-            await Task.Delay((int)(ratingBarDuration * 1000));
-            if (_RatingBarStream != -1)
-            {
-                 CSound.Close(_RatingBarStream);
-                 _RatingBarStream = -1;
-            }
-
             // Play the appropriate applause sound based on maxPoints
-            if (maxPoints < 2000 && !_IsLeavingScreen)
+            if (maxPoints < 2000)
             {
                 // No sound is played
             }
-            else if (maxPoints < 5000 && !_IsLeavingScreen)
+            else if (maxPoints < 5000)
             {
+                await Task.Delay(1000);
                 _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
             }
-            else if (maxPoints < 8000 && !_IsLeavingScreen)
+            else if (maxPoints < 8000)
             {
+                await Task.Delay(1000);
                 _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);
             }
-            else if (!_IsLeavingScreen)
+            else
             {
+                await Task.Delay(1000);
                 _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 80);
             }
         }
@@ -447,14 +433,6 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
-            _IsLeavingScreen = true;
-            
-            if (_RatingBarStream != -1)
-            {
-                 CSound.Close(_RatingBarStream);
-                _RatingBarStream = -1;
-            }
-
             if (_ApplauseStream != -1)
             {
                  CSound.Close(_ApplauseStream);
