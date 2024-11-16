@@ -32,7 +32,6 @@ namespace Vocaluxe.Base
         ApplauseLow,
         ApplauseMid,
         ApplauseHigh,
-        RatingBar,
         Highscore
     }
 
@@ -190,9 +189,6 @@ namespace Vocaluxe.Base
             {
                 case ESounds.T440:
                     file = Path.Combine(file, CSettings.FileNameSoundT440);
-                    break;
-                case ESounds.RatingBar:
-                    file = Path.Combine(file, CSettings.FileNameSoundRatingBar);
                     break;
                 case ESounds.ApplauseLow:
                     file = Path.Combine(file, CSettings.FileNameSoundApplauseLow);
