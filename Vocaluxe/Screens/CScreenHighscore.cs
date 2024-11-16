@@ -183,7 +183,7 @@ namespace Vocaluxe.Screens
             _ChangePos(mouseEvent.Wheel);
             return true;
         }
-       
+
         public override bool UpdateGame()
         {
             for (int p = 0; p < _NumEntrys; p++)
