@@ -55,7 +55,7 @@ namespace Vocaluxe.Screens
         private string[,] _StaticAvatar;
         private int _Round;
         private CPoints _Points;
-        
+
         public override EMusicType CurrentMusicType
         {
             get { return EMusicType.BackgroundPreview; }
@@ -131,7 +131,7 @@ namespace Vocaluxe.Screens
 
         public override void OnShow()
         {
-            base.OnShow();          
+            base.OnShow();
             //-1 --> Show average
             _Round = CGame.NumRounds > 1 ? -1 : 0;
             _Points = CGame.GetPoints();
