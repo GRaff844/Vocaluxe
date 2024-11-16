@@ -265,34 +265,29 @@ namespace Vocaluxe.Screens
             }
             else if (maxPoints < 5000)
             {
-                await Task.Delay(1000);
+                await Task.Delay(500);
                 _ApplauseStream = PlaySound(ESounds.ApplauseLow, 80);
             }
             else if (maxPoints < 8000)
             {
-                await Task.Delay(1000);
+                await Task.Delay(500);
                 _ApplauseStream = PlaySound(ESounds.ApplauseMid, 80);
             }
             else
             {
-                await Task.Delay(1000);
+                await Task.Delay(500);
                 _ApplauseStream = PlaySound(ESounds.ApplauseHigh, 80);
             }
         }
 
-        // Helper method to play a sound at a specific volume, track its stream ID, and stop previous sounds
         private int PlaySound(ESounds sound, int volume)
         {
-            // Stop the previous sound if it was playing
             if (_Stream != -1)
             {
                 CSound.Close(_Stream);
             }
 
-            // Start the new sound and retrieve its stream ID
             int streamId = CSound.PlaySound(sound, false);
-
-            // Set the volume for this specific stream
             CSound.SetStreamVolume(streamId, volume);
 
             return streamId;
