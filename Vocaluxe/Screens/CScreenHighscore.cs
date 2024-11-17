@@ -60,8 +60,7 @@ namespace Vocaluxe.Screens
         private int _HighscoreStream = -1;
         private bool _HasPlayedSound = false;
         
-        // Helper method to play a sound at a specific volume, track its stream ID, and stop previous sounds
-        private int PlaySound(ESounds sound, int volume)
+        private static int PlaySound(ESounds sound, int volume)
         {
             int streamId = CSound.PlaySound(sound, false);
             CSound.SetStreamVolume(streamId, volume);
@@ -200,7 +199,7 @@ namespace Vocaluxe.Screens
 
                     if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound)
                     {
-                         _HighscoreStream = PlaySound(ESounds.Highscore, 80);
+                         _HighscoreStream = CScreenHighscore.PlaySound(ESounds.Highscore, 80);
                          _HasPlayedSound = true;
                     }
                   }
