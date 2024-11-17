@@ -279,7 +279,7 @@ namespace Vocaluxe.Screens
             }
         }
 
-        private int PlaySound(ESounds sound, int volume)
+        private static int PlaySound(ESounds sound, int volume)
         {
             int streamId = CSound.PlaySound(sound, false);
             CSound.SetStreamVolume(streamId, volume);
