@@ -253,7 +253,6 @@ namespace Vocaluxe.Screens
             }
         }
 
-        private int _Stream = -1;
         private int _ApplauseStream = -1;
 
         private async void _PlayApplauseSound(int maxPoints)
@@ -282,11 +281,6 @@ namespace Vocaluxe.Screens
 
         private int PlaySound(ESounds sound, int volume)
         {
-            if (_Stream != -1)
-            {
-                CSound.Close(_Stream);
-            }
-
             int streamId = CSound.PlaySound(sound, false);
             CSound.SetStreamVolume(streamId, volume);
 
