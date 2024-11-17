@@ -57,23 +57,13 @@ namespace Vocaluxe.Screens
             get { return EMusicType.BackgroundPreview; }
         }
 
-        private int _Stream = -1;
         private int _HighscoreStream = -1;
         private bool _HasPlayedSound = false;
         
         // Helper method to play a sound at a specific volume, track its stream ID, and stop previous sounds
         private int PlaySound(ESounds sound, int volume)
         {
-            // Stop the previous sound if it was playing
-            if (_Stream != -1)
-            {
-                CSound.Close(_Stream);
-            }
-
-            // Start the new sound and retrieve its stream ID
             int streamId = CSound.PlaySound(sound, false);
-
-            // Set the volume for this specific stream
             CSound.SetStreamVolume(streamId, volume);
 
             return streamId;
