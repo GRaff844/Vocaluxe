@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ using VocaluxeLib;
 using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Songs;
+using Vocaluxe.Lib.Sound;
 
 namespace Vocaluxe.Screens
 {
@@ -54,6 +55,17 @@ namespace Vocaluxe.Screens
         public override EMusicType CurrentMusicType
         {
             get { return EMusicType.BackgroundPreview; }
+        }
+
+        private int _HighscoreStream = -1;
+        private bool _HasPlayedSound = false;
+        
+        private static int PlaySound(ESounds sound, int volume)
+        {
+            int streamId = CSound.PlaySound(sound, false);
+            CSound.SetStreamVolume(streamId, volume);
+
+            return streamId;
         }
 
         public override void Init()
@@ -184,7 +196,13 @@ namespace Vocaluxe.Screens
                     _Texts[_TextDate[p]].Text = _Scores[_Round][_Pos + p].Date;
 
                     _ParticleEffects[_ParticleEffectNew[p]].Visible = _IsNewEntry(_Scores[_Round][_Pos + p].ID);
-                }
+
+                    if (_ParticleEffects[_ParticleEffectNew[p]].Visible && !_HasPlayedSound)
+                    {
+                         _HighscoreStream = CScreenHighscore.PlaySound(ESounds.Highscore, CConfig.GameMusicVolume);
+                         _HasPlayedSound = true;
+                    }
+                  }
                 else
                 {
                     _Texts[_TextNumber[p]].Visible = false;
@@ -200,6 +218,7 @@ namespace Vocaluxe.Screens
         public override void OnShow()
         {
             base.OnShow();
+            _HasPlayedSound = false;
             _Round = 0;
             _Pos = 0;
             _NewEntryIDs.Clear();
@@ -347,7 +366,13 @@ namespace Vocaluxe.Screens
         }
 
         private void _LeaveScreen()
-        {
+        {           
+            if (_HighscoreStream != -1)
+            {
+                 CSound.Close(_HighscoreStream);
+                _HighscoreStream = -1;
+            }
+            
             CParty.LeavingHighscore();
         }
     }

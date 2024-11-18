@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -19,12 +19,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Linq;
+using System.Threading.Tasks;
 using Vocaluxe.Base;
 using Vocaluxe.Base.Server;
 using VocaluxeLib;
 using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Songs;
+using Vocaluxe.Lib.Sound;
 
 namespace Vocaluxe.Screens
 {
@@ -250,6 +253,33 @@ namespace Vocaluxe.Screens
             }
         }
 
+        private int _ApplauseStream = -1;
+
+        private void _PlayApplauseSound(int maxPoints)
+        {
+            // Play the appropriate applause sound based on maxPoints
+            if (maxPoints >= 8000)
+            {
+                 _ApplauseStream = PlaySound(ESounds.ApplauseHigh, CConfig.GameMusicVolume);
+            }
+            else if (maxPoints >= 5000)
+            {
+                _ApplauseStream = PlaySound(ESounds.ApplauseMid, CConfig.GameMusicVolume);
+            }
+            else if (maxPoints >= 2000)
+            {
+            _ApplauseStream = PlaySound(ESounds.ApplauseLow, CConfig.GameMusicVolume);
+            }
+        }
+
+        private static int PlaySound(ESounds sound, int volume)
+        {
+            int streamId = CSound.PlaySound(sound, false);
+            CSound.SetStreamVolume(streamId, volume);
+
+            return streamId;
+        }
+
         private void _UpdateRatings()
         {
             CSong song = null;
@@ -264,6 +294,9 @@ namespace Vocaluxe.Screens
                 if (_Points.NumRounds > 1)
                     _Texts[_TextSong].Text += " (" + (_Round + 1) + "/" + _Points.NumRounds + ")";
                 players = _Points.GetPlayer(_Round, CGame.NumPlayers);
+
+                int maxPoints = (int)Math.Round(players.Max(player => player.Points));
+                _PlayApplauseSound(maxPoints);
             }
             else
             {
@@ -280,6 +313,9 @@ namespace Vocaluxe.Screens
                 }
                 for (int p = 0; p < players.Length; p++)
                     players[p].Points = (int)Math.Round(players[p].Points / CGame.NumRounds);
+
+                int maxPoints = (int)Math.Round(players.Max(player => player.Points));
+                _PlayApplauseSound(maxPoints);
             }
 
             for (int p = 0; p < players.Length; p++)
@@ -379,6 +415,12 @@ namespace Vocaluxe.Screens
 
         private void _LeaveScreen()
         {
+            if (_ApplauseStream != -1)
+            {
+                 CSound.Close(_ApplauseStream);
+                 _ApplauseStream = -1;
+            }
+            
             CParty.LeavingScore();
         }
     }
